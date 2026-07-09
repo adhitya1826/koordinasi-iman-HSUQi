@@ -418,6 +418,15 @@
       <p class="hint" style="margin:10px 4px 0;text-align:left">Isi form untuk tiap santri baru. Ketuk kartu untuk lihat detail lengkap.</p>
       <div id="ptList" style="margin-top:12px"></div>
     </section>
+    <!-- HALAMAN GRUP (khusus HP) -->
+    <section class="screen" id="grp_admin">
+      <div class="section-title">Administrasi</div>
+      <div class="submenu" id="grpAdminList"></div>
+    </section>
+    <section class="screen" id="grp_kelas">
+      <div class="section-title">Manajemen Kelas</div>
+      <div class="submenu" id="grpKelasList"></div>
+    </section>
   </div>
 
   <nav class="nav full">
@@ -429,9 +438,9 @@
     <button data-t="placement" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h6a1 1 0 011 1v0a1 1 0 01-1 1H9a1 1 0 01-1-1v0a1 1 0 011-1z"/><path d="M8 6H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V7a1 1 0 00-1-1h-2"/><path d="M9 12h6M9 16h4"/></svg>P.Test</button>
   </nav>
   <nav class="nav compact">
-    <button data-g="admin" onclick="showMenu('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/></svg>Administrasi</button>
+    <button data-g="admin" onclick="go2('grp_admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/></svg>Administrasi</button>
     <button class="on" data-g="dashboard" onclick="go2('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>Beranda</button>
-    <button data-g="kelas" onclick="showMenu('kelas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Manajemen Kelas</button>
+    <button data-g="kelas" onclick="go2('grp_kelas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Manajemen Kelas</button>
   </nav>
 </div>
 
@@ -839,7 +848,7 @@ function doSync(btnId,timeId){const btn=document.getElementById(btnId);const ori
 
 /* ============ NAV ============ */
 let navHistory=['dashboard'];
-const SCREEN_GROUP={dashboard:'dashboard',berkas:'admin',absensi:'admin',kaldik:'admin',komposisi:'kelas',placement:'kelas'};
+const SCREEN_GROUP={dashboard:'dashboard',grp_admin:'admin',berkas:'admin',absensi:'admin',kaldik:'admin',grp_kelas:'kelas',komposisi:'kelas',placement:'kelas'};
 function showScreen(id){
   document.querySelectorAll('.nav.full button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));
   const grp=SCREEN_GROUP[id]||'dashboard';
@@ -855,31 +864,29 @@ function go(btn){go2(btn.dataset.t);}
 function go2(id){if(navHistory[navHistory.length-1]!==id)navHistory.push(id);showScreen(id);}
 function goBack(){if(navHistory.length>1)navHistory.pop();showScreen(navHistory[navHistory.length-1]);}
 
-/* lembar sub-menu untuk nav ringkas (HP) */
+/* isi halaman grup (khusus HP) */
 const MENU_GROUPS={
-  admin:{title:'Administrasi',sub:'Data guru, berkas & media, absensi, kalender',items:[
+  admin:[
     {id:'berkas',label:'Data Guru & Berkas',desc:'QC media, observasi, tautan Drive/Sheet',svg:'<path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/>'},
     {id:'absensi',label:'Absensi (Pertemuan)',desc:'Hitung pertemuan mengajar',svg:'<path d="M9 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M4 20a5 5 0 0110 0"/><path d="M16 11l2 2 4-4"/>'},
     {id:'kaldik',label:'Kalender Pendidikan',desc:'Agenda & notif penting',svg:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>'}
-  ]},
-  kelas:{title:'Manajemen Kelas',sub:'Komposisi kelas & placement test',items:[
+  ],
+  kelas:[
     {id:'komposisi',label:'Komposisi Kelas',desc:'Jumlah santri & rentang usia',svg:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'},
     {id:'placement',label:'Placement Test',desc:'Form data santri baru',svg:'<path d="M9 5h6a1 1 0 011 1a1 1 0 01-1 1H9a1 1 0 01-1-1a1 1 0 011-1z"/><path d="M8 6H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V7a1 1 0 00-1-1h-2"/><path d="M9 12h6M9 16h4"/>'}
-  ]}
+  ]
 };
-function showMenu(g){
-  const m=MENU_GROUPS[g];
-  md.innerHTML=`<h3>${m.title}</h3><p class="msub">${m.sub}</p>
-    <div class="submenu">
-      ${m.items.map(it=>`<button class="si" onclick="pickMenu('${it.id}')">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.svg}</svg></span>
-        <span class="tx"><b>${it.label}</b><span>${it.desc}</span></span>
-      </button>`).join('')}
-    </div>
-    <div class="mbtns"><button class="mbtn cancel" onclick="closeModal()">Tutup</button></div>`;
-  ov.classList.add('show');
+function itemHTML(it){
+  return `<button class="si" onclick="go2('${it.id}')">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.svg}</svg></span>
+    <span class="tx"><b>${it.label}</b><span>${it.desc}</span></span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-soft)" stroke-width="2.2" stroke-linecap="round" style="flex:none"><path d="M9 6l6 6-6 6"/></svg>
+  </button>`;
 }
-function pickMenu(id){ closeModal(); go2(id); }
+function renderGroupPages(){
+  document.getElementById('grpAdminList').innerHTML=MENU_GROUPS.admin.map(itemHTML).join('');
+  document.getElementById('grpKelasList').innerHTML=MENU_GROUPS.kelas.map(itemHTML).join('');
+}
 
 /* toast */
 let toastT;
@@ -939,7 +946,7 @@ function doLogout(){
 }
 
 /* ============ INIT ============ */
-function renderAll(){renderDashboard();renderGuru();renderAbs();renderKal();renderKomp();renderPT();}
+function renderAll(){renderDashboard();renderGuru();renderAbs();renderKal();renderKomp();renderPT();renderGroupPages();}
 renderAll();
 /* pulihkan sesi login bila masih aktif */
 (function(){ try{ const r=sessionStorage.getItem('uqi_role'); if(r){ ROLE=r; document.getElementById('login').classList.add('hide'); applyRole(); } }catch(e){} })();
