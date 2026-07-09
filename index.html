@@ -230,24 +230,30 @@
   /* Laptop/desktop: lebarkan tampilan, pakai nav lengkap 6 menu */
   @media(min-width:720px){
     .phone{max-width:100%;box-shadow:none}
-    .scroll{padding-left:40px;padding-right:40px;padding-bottom:110px}
-    .nav.full{display:flex;padding-left:40px;padding-right:40px}
+    /* Sidebar menu di kiri */
+    .nav.full{display:flex;flex-direction:column;align-items:stretch;position:fixed;left:0;top:0;bottom:0;
+      width:234px;background:#fff;border-right:1px solid var(--line);border-top:none;
+      padding:18px 12px;gap:4px;overflow-y:auto;z-index:20}
+    .nav.full::before{content:"KOORDINASI IMAN";display:block;font-size:10.5px;font-weight:800;letter-spacing:1px;
+      color:var(--ink-soft);padding:4px 14px 12px}
+    .nav.full button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;
+      font-weight:700;padding:12px 14px;border-radius:12px;width:100%}
+    .nav.full button svg{width:20px;height:20px}
+    .nav.full button.on{background:var(--primary-tint)}
     .nav.compact{display:none}
-    .nav.full button{font-size:12.5px}
-    .topbar{padding-left:40px;padding-right:40px}
+    .topbar{margin-left:234px}
+    .scroll{margin-left:234px;padding-left:34px;padding-right:34px;padding-bottom:40px}
     /* dashboard: ringkasan 3 kolom + lebar teratur di tengah */
     .stat-grid{grid-template-columns:repeat(3,1fr)}
-    .screen{max-width:1100px;margin:0 auto}
-    /* daftar (guru, kelas, placement, agenda, absensi) jadi 2 kolom di layar lebar */
-    #guruList,#kompList,#ptList,#kalList,#absList{
+    .screen{max-width:1080px;margin:0 auto}
+    /* daftar jadi 2 kolom di layar lebar */
+    #guruList,#mediaList,#kompList,#ptList,#absList{
       display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
-    #guruList .guru,#kompList .komp,#ptList .pt,#kalList .kal,#kalList .kal-alert,#absList .mrow{margin-bottom:0}
-    .kal-alert{grid-column:1/-1}
-    .section-title{grid-column:1/-1}
+    #guruList .guru,#mediaList .guru,#kompList .komp,#ptList .pt,#absList .mrow{margin-bottom:0}
   }
   @media(min-width:1200px){
-    #guruList,#ptList{grid-template-columns:1fr 1fr 1fr}
-    .screen{max-width:1280px}
+    #guruList,#mediaList,#ptList{grid-template-columns:1fr 1fr 1fr}
+    .screen{max-width:1240px}
   }
   /* Lembar sub-menu (HP) */
   .submenu{display:flex;flex-direction:column;gap:10px;margin-top:6px}
@@ -378,11 +384,19 @@
     <section class="screen active" id="dashboard"></section>
     <!-- BERKAS -->
     <section class="screen" id="berkas">
-      <div class="section-title">Pusat Berkas & QC Media
+      <div class="section-title">Pusat Berkas & QC
         <button class="add" onclick="openGuru()">＋ Guru</button></div>
       <input class="search" id="searchGuru" placeholder="🔍  Cari nama guru…" oninput="renderGuru()">
-      <p class="hint" style="margin:10px 4px 0;text-align:left">Ketuk nama guru untuk checklist. Ketuk status untuk ubah. Isi tautan Drive/Spreadsheet lewat tombol Ubah.</p>
+      <p class="hint" style="margin:10px 4px 0;text-align:left">Berisi SPPH, Soal UAS Iman & Rapor per guru. Ketuk nama guru untuk checklist. (Audio & PPT kini di menu Media.)</p>
       <div id="guruList" style="margin-top:12px"></div>
+    </section>
+    <!-- MEDIA PEMBELAJARAN -->
+    <section class="screen" id="media">
+      <div class="section-title">Media Pembelajaran
+        <button class="add" onclick="openMedia()">＋ Media</button></div>
+      <input class="search" id="searchMedia" placeholder="🔍  Cari judul media…" oninput="renderMedia()">
+      <p class="hint" style="margin:10px 4px 0;text-align:left">Kumpulan Audio Talaqqi & PPT Pembelajaran, lengkap dengan tautan & status QC.</p>
+      <div id="mediaList" style="margin-top:12px"></div>
     </section>
     <!-- ABSENSI / PERTEMUAN -->
     <section class="screen" id="absensi">
@@ -432,6 +446,7 @@
   <nav class="nav full">
     <button class="on" data-t="dashboard" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>Beranda</button>
     <button data-t="berkas" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/></svg>Berkas</button>
+    <button data-t="media" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>Media</button>
     <button data-t="absensi" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M4 20a5 5 0 0110 0"/><path d="M16 11l2 2 4-4"/></svg>Absensi</button>
     <button data-t="kaldik" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Kaldik</button>
     <button data-t="komposisi" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Komposisi</button>
@@ -460,12 +475,13 @@ async function sbUpsert(t,rows){if(!rows||!rows.length)return;await fetch(`${SB_
 async function sbDelete(t,q){await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'DELETE',headers:{...SB_H,'Prefer':'return=minimal'}});}
 
 async function loadFromSupabase(){
-  const [guru,kelas,kaldik,plc]=await Promise.all([sbGet('guru'),sbGet('kelas'),sbGet('kaldik'),sbGet('placement')]);
+  const [guru,kelas,kaldik,plc,med]=await Promise.all([sbGet('guru'),sbGet('kelas'),sbGet('kaldik'),sbGet('placement'),sbGet('media')]);
   return {
     guru:guru.sort((a,b)=>(a.urutan||0)-(b.urutan||0)).map(g=>({id:g.id,name:g.name,kelas:g.kelas||'',drive:g.drive||'',sheet:g.sheet||'',pertemuan:g.pertemuan||0,jamNgajar:g.jam_ngajar||'',observasi:g.observasi||'',qc:g.qc||{}})),
     kelas:kelas.sort((a,b)=>(a.urutan||0)-(b.urutan||0)),
     kaldik:kaldik.sort((a,b)=>((a.month||'')+(a.day||'')).localeCompare((b.month||'')+(b.day||''))),
     placement:plc.sort((a,b)=>(a.urutan||0)-(b.urutan||0)).map(p=>({id:p.id,nama:p.nama,telp:p.telp,jk:p.jk,usia:p.usia,domisili:p.domisili,tahfizh:p.tahfizh,tahsin:p.tahsin,pkbm:p.pkbm,mulai:p.mulai,jam:p.jam})),
+    media:med.sort((a,b)=>(a.urutan||0)-(b.urutan||0)).map(m=>({id:m.id,jenis:m.jenis,judul:m.judul,link:m.link||'',status:m.status||'late'})),
     absensi:{}
   };
 }
@@ -475,6 +491,7 @@ async function pushAll(){
     await sbUpsert('kelas', S.kelas.map((k,i)=>({id:k.id,name:k.name,cap:k.cap,usia:k.usia,n:k.n,urutan:i})));
     await sbUpsert('kaldik', S.kaldik.map(k=>({id:k.id,day:k.day,month:k.month,title:k.title,note:k.note||'',tag:k.tag||'',penting:!!k.penting})));
     await sbUpsert('placement', (S.placement||[]).map((p,i)=>({id:p.id,nama:p.nama,telp:p.telp||'',jk:p.jk||'',usia:p.usia||'',domisili:p.domisili||'',tahfizh:p.tahfizh||'',tahsin:p.tahsin||'',pkbm:p.pkbm||'',mulai:p.mulai||'',jam:p.jam||'',urutan:i})));
+    await sbUpsert('media', (S.media||[]).map((m,i)=>({id:m.id,jenis:m.jenis,judul:m.judul,link:m.link||'',status:m.status||'late',urutan:i})));
     setOnline(true);
   }catch(e){setOnline(false);}
 }
@@ -496,7 +513,8 @@ const store={
 };
 
 /* ============ SEED DATA ============ */
-const QC=[["ppt","PPT Iman"],["audio","Audio Talaqqi"],["spph","SPPH"],["uas","Soal UAS Iman"],["rapor","Rapor Semester"]];
+const QC=[["spph","SPPH"],["uas","Soal UAS Iman"],["rapor","Rapor Semester"]];
+const MEDIA_STLABEL={ok:"Lengkap",warn:"Diperiksa",late:"Belum"};
 const stLabel={ok:"Lengkap",warn:"Diperiksa",late:"Belum"};
 const stClass={ok:"s-ok",warn:"s-warn",late:"s-late"};
 const dotClass={ok:"b-ok",warn:"b-warn",late:"b-late"};
@@ -530,8 +548,15 @@ function seed(){
     {id:'p1',nama:"Ahmad Fauzi",telp:"0812-3456-7890",jk:"Laki-laki",usia:"7",domisili:"Bandung",tahfizh:"Juz 30 (5 surat)",tahsin:"Lancar tajwid dasar",pkbm:"Kelas 1",mulai:"2026-07-14",jam:"08.00–11.00"},
     {id:'p2',nama:"Zahra Aulia",telp:"0813-9876-5432",jk:"Perempuan",usia:"9",domisili:"Cimahi",tahfizh:"Juz 30 lengkap",tahsin:"Perlu penguatan makhraj",pkbm:"Kelas 3",mulai:"2026-07-14",jam:"08.00–11.00"}
   ];
+  const media=[
+    {id:'m1',jenis:'audio',judul:"Audio Talaqqi Juz 30 — An-Naba",link:"",status:'ok'},
+    {id:'m2',jenis:'audio',judul:"Audio Talaqqi Juz 30 — Al-Mursalat",link:"",status:'warn'},
+    {id:'m3',jenis:'ppt',judul:"PPT Iman — Rukun Iman",link:"",status:'ok'},
+    {id:'m4',jenis:'ppt',judul:"PPT Iman — Asmaul Husna",link:"",status:'late'},
+    {id:'m5',jenis:'ppt',judul:"PPT Iman — Kisah Nabi",link:"",status:'warn'}
+  ];
   const absensi={};
-  return {guru,kelas,kaldik,placement,absensi:{[todayKey()]:absensi}};
+  return {guru,kelas,kaldik,placement,media,absensi:{[todayKey()]:absensi}};
 }
 
 /* ============ STATE ============ */
@@ -565,10 +590,11 @@ function renderDashboard(){
 
   // attention list
   const attn=[];
-  const belumPPT=S.guru.filter(g=>g.qc.ppt==='late');
-  if(belumPPT.length) attn.push({c:'late',ic:'📊',t:belumPPT.length+' guru belum lengkap PPT Iman',d:belumPPT.slice(0,3).map(g=>g.name).join(', ')+(belumPPT.length>3?' …':'')});
-  const audioQC=S.guru.filter(g=>g.qc.audio==='warn');
-  if(audioQC.length) attn.push({c:'warn',ic:'🎧',t:audioQC.length+' Audio Talaqqi masih diperiksa (QC)',d:'Menunggu pengecekan kualitas'});
+  const md_=S.media||[];
+  const mediaBelum=md_.filter(m=>m.status==='late');
+  if(mediaBelum.length) attn.push({c:'late',ic:'🎬',t:mediaBelum.length+' media pembelajaran belum lengkap',d:mediaBelum.slice(0,3).map(m=>m.judul).join(', ')+(mediaBelum.length>3?' …':'')});
+  const mediaQC=md_.filter(m=>m.status==='warn');
+  if(mediaQC.length) attn.push({c:'warn',ic:'🎧',t:mediaQC.length+' media masih diperiksa (QC)',d:'Menunggu pengecekan kualitas'});
   const belumSPPH=S.guru.filter(g=>g.qc.spph==='late');
   if(belumSPPH.length) attn.push({c:'warn',ic:'📝',t:belumSPPH.length+' SPPH belum masuk',d:'Perlu ditindaklanjuti'});
   const tanpaObs=S.guru.filter(g=>!(g.observasi||'').trim());
@@ -576,6 +602,7 @@ function renderDashboard(){
   const penuh=S.kelas.filter(k=>k.n>=k.cap).length;
   if(penuh) attn.push({c:'warn',ic:'🏫',t:penuh+' kelas sudah penuh (12 santri)',d:'Tidak menerima santri baru'});
   if(!attn.length) attn.push({c:'ok',ic:'✅',t:'Semua program berjalan baik',d:'Tidak ada yang perlu perhatian khusus'});
+  const mediaLengkap = md_.length ? Math.round(md_.filter(m=>m.status==='ok').length/md_.length*100) : 0;
 
   const el=document.getElementById('dashboard');
   el.innerHTML=`
@@ -586,10 +613,11 @@ function renderDashboard(){
       <div class="stat full">
         <div class="ring-row">
           <div class="ring" style="background:conic-gradient(var(--accent) ${lengkap}%, var(--primary-tint) 0)"><i>${lengkap}%</i></div>
-          <div><div class="lbl" style="font-size:13px">Kelengkapan Media & Berkas Iman</div>
+          <div><div class="lbl" style="font-size:13px">Kelengkapan Berkas Iman (SPPH, UAS, Rapor)</div>
           <div class="sub" style="font-size:12px;margin-top:6px">Terkumpul ${lengkap}% dari seluruh berkas.<br>Buka <b>Berkas</b> untuk melengkapi.</div></div>
         </div>
       </div>
+      <div class="stat full" style="padding:14px 16px"><div class="lbl" style="display:flex;justify-content:space-between"><span>🎬 Kelengkapan Media Pembelajaran</span><b style="color:var(--primary-deep);font-size:16px">${mediaLengkap}%</b></div></div>
       <div class="stat full" style="padding:14px 16px"><div class="lbl" style="display:flex;justify-content:space-between"><span>📋 Placement Test terisi</span><b style="color:var(--primary-deep);font-size:16px">${plc} santri</b></div></div>
     </div>
     <div class="section-title">Perlu Perhatian</div>
@@ -684,6 +712,50 @@ function renderKomp(){
     </div>`;}).join('');
 }
 function delKelas(id){const k=S.kelas.find(x=>x.id===id);confirmBox(`Hapus kelas "${k.name}"?`,()=>{S.kelas=S.kelas.filter(x=>x.id!==id);sbDelete('kelas','id=eq.'+id);save();renderKomp();renderDashboard();toast('Kelas dihapus');});}
+
+/* ============ MEDIA PEMBELAJARAN ============ */
+const MEDIA_JENIS={audio:{label:'Audio Talaqqi',ic:'🎧'},ppt:{label:'PPT Pembelajaran',ic:'📊'}};
+function renderMedia(){
+  const filter=(document.getElementById('searchMedia').value||'').toLowerCase();
+  const box=document.getElementById('mediaList');
+  const list=(S.media||[]).filter(m=>(m.judul||'').toLowerCase().includes(filter));
+  if(!list.length){box.innerHTML='<div class="empty">Belum ada media. Ketuk ＋ Media untuk menambah.</div>';return;}
+  box.innerHTML=list.map(m=>`
+    <div class="guru">
+      <div class="guru-head" style="cursor:default">
+        <div class="ava" style="background:linear-gradient(140deg,#8Fc,#1B7FB0);font-size:18px">${MEDIA_JENIS[m.jenis]?MEDIA_JENIS[m.jenis].ic:'📄'}</div>
+        <div class="info"><div class="nm">${esc(m.judul)}</div><div class="kl">${MEDIA_JENIS[m.jenis]?MEDIA_JENIS[m.jenis].label:''}</div></div>
+        <button class="status ${stClass[m.status]}" onclick="cycleMedia('${m.id}',this)">${m.status==='ok'?'✓':m.status==='warn'?'⏳':'✗'} ${stLabel[m.status]}</button>
+      </div>
+      <div class="links" style="border-top:1px solid var(--line)">
+        ${m.link?`<a class="lnk drive" href="${esc(m.link)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>Buka File</a>`:`<span class="lnk off">🔗 Tautan belum diisi</span>`}
+      </div>
+      <div class="guru-actions">
+        <button class="ga" onclick="openMedia('${m.id}')">✎ Ubah</button>
+        <button class="ga del" onclick="delMedia('${m.id}')">🗑 Hapus</button>
+      </div>
+    </div>`).join('');
+}
+function cycleMedia(id,btn){const m=S.media.find(x=>x.id===id);m.status=nextSt[m.status];save();btn.className="status "+stClass[m.status];btn.innerHTML=`${m.status==='ok'?'✓':m.status==='warn'?'⏳':'✗'} ${stLabel[m.status]}`;renderDashboard();}
+function openMedia(id){
+  const m=id?S.media.find(x=>x.id===id):{jenis:'audio',judul:'',link:'',status:'late'};
+  md.innerHTML=`<h3>${id?'Ubah':'Tambah'} Media</h3><p class="msub">Audio Talaqqi / PPT Pembelajaran</p>
+    <div class="fld"><label>Jenis Media</label><select id="md_jenis"><option value="audio" ${m.jenis==='audio'?'selected':''}>Audio Talaqqi</option><option value="ppt" ${m.jenis==='ppt'?'selected':''}>PPT Pembelajaran</option></select></div>
+    <div class="fld"><label>Judul Media</label><input id="md_judul" value="${esc(m.judul)}" placeholder="mis. Audio Talaqqi Juz 30 — An-Naba"></div>
+    <div class="fld"><label>Tautan File (Drive/YouTube/dll)</label><input id="md_link" value="${esc(m.link)}" placeholder="https://..."></div>
+    <div class="fld"><label>Status QC</label><select id="md_status"><option value="late" ${m.status==='late'?'selected':''}>Belum</option><option value="warn" ${m.status==='warn'?'selected':''}>Diperiksa</option><option value="ok" ${m.status==='ok'?'selected':''}>Lengkap</option></select></div>
+    <div class="mbtns"><button class="mbtn cancel" onclick="closeModal()">Batal</button><button class="mbtn save" onclick="saveMedia(${id?`'${id}'`:'null'})">Simpan</button></div>`;
+  ov.classList.add('show');
+}
+function saveMedia(id){
+  const judul=document.getElementById('md_judul').value.trim();
+  if(!judul){toast('Judul media wajib diisi');return;}
+  const obj={jenis:document.getElementById('md_jenis').value,judul,link:document.getElementById('md_link').value.trim(),status:document.getElementById('md_status').value};
+  if(!S.media) S.media=[];
+  if(id)Object.assign(S.media.find(x=>x.id===id),obj); else S.media.push({id:uid('m'),...obj});
+  save();closeModal();renderMedia();renderDashboard();toast('Media disimpan');
+}
+function delMedia(id){const m=S.media.find(x=>x.id===id);confirmBox(`Hapus media "${m.judul}"?`,()=>{S.media=S.media.filter(x=>x.id!==id);sbDelete('media','id=eq.'+id);save();renderMedia();renderDashboard();toast('Media dihapus');});}
 
 /* ============ PLACEMENT TEST ============ */
 function renderPT(){
@@ -848,7 +920,7 @@ function doSync(btnId,timeId){const btn=document.getElementById(btnId);const ori
 
 /* ============ NAV ============ */
 let navHistory=['dashboard'];
-const SCREEN_GROUP={dashboard:'dashboard',grp_admin:'admin',berkas:'admin',absensi:'admin',kaldik:'admin',grp_kelas:'kelas',komposisi:'kelas',placement:'kelas'};
+const SCREEN_GROUP={dashboard:'dashboard',grp_admin:'admin',berkas:'admin',media:'admin',absensi:'admin',kaldik:'admin',grp_kelas:'kelas',komposisi:'kelas',placement:'kelas'};
 function showScreen(id){
   document.querySelectorAll('.nav.full button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));
   const grp=SCREEN_GROUP[id]||'dashboard';
@@ -867,7 +939,8 @@ function goBack(){if(navHistory.length>1)navHistory.pop();showScreen(navHistory[
 /* isi halaman grup (khusus HP) */
 const MENU_GROUPS={
   admin:[
-    {id:'berkas',label:'Data Guru & Berkas',desc:'QC media, observasi, tautan Drive/Sheet',svg:'<path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/>'},
+    {id:'berkas',label:'Data Guru & Berkas',desc:'SPPH, Soal UAS, Rapor, observasi',svg:'<path d="M4 5h6l2 2h8v12H4z"/><path d="M9 13l2 2 4-4"/>'},
+    {id:'media',label:'Media Pembelajaran',desc:'Audio Talaqqi & PPT + status QC',svg:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/>'},
     {id:'absensi',label:'Absensi (Pertemuan)',desc:'Hitung pertemuan mengajar',svg:'<path d="M9 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M4 20a5 5 0 0110 0"/><path d="M16 11l2 2 4-4"/>'},
     {id:'kaldik',label:'Kalender Pendidikan',desc:'Agenda & notif penting',svg:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>'}
   ],
@@ -946,7 +1019,7 @@ function doLogout(){
 }
 
 /* ============ INIT ============ */
-function renderAll(){renderDashboard();renderGuru();renderAbs();renderKal();renderKomp();renderPT();renderGroupPages();}
+function renderAll(){renderDashboard();renderGuru();renderMedia();renderAbs();renderKal();renderKomp();renderPT();renderGroupPages();}
 renderAll();
 /* pulihkan sesi login bila masih aktif */
 (function(){ try{ const r=sessionStorage.getItem('uqi_role'); if(r){ ROLE=r; document.getElementById('login').classList.add('hide'); applyRole(); } }catch(e){} })();
